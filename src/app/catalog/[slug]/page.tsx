@@ -23,7 +23,7 @@ export async function generateMetadata(
 }
 
 const fetchPreviewData = async (slug: string) => {
-    let res = await fetch(`https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/query/production?query=*[_type == "products" && slug.current == ${slug}]`)
+    let res = await fetch(`https://19f7v5q3.api.sanity.io/v2023-07-25/data/query/production?query=*%5B_type+%3D%3D+%22products%22+%26%26+slug.current+%3D%3D+%27flex-sweatshirt%27%5D`)
     return res.json()
 }
 
@@ -36,6 +36,7 @@ export async function generateStaticParams() {
 
 
 const Catalog: FC<{ params: { slug: string } }> = async ({ params }) => {
+    console.log()
     let Data: responseType = await fetchPreviewData(params.slug)
     return (
         <ContextWrapper>

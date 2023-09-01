@@ -63,16 +63,13 @@ const SignupComp = () => {
             signUpUser(formData.email, formData.password)
         }
     };
-    function handleSignUpWithGoogle() {
-        signUpViaGoogle()
-    }
     useEffect(() => {
         if (userData) {
           window.location.href = "/"
         }
-        if (errorsOfFirebase.errorMessage.length > 0) {
+        if (errorsOfFirebase?.errorMessage.length > 0) {
             notificationError(errorsOfFirebase.errorMessage)
-          }
+        }
       }, [userData,errorsOfFirebase])
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">

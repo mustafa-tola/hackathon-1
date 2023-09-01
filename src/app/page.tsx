@@ -12,21 +12,21 @@ async function fetchAllProductsData() {
             revalidate: 60
         }
     })
-  // if(!response.ok) {
-  //   throw new Error("Failed to fetch");
-  // }
-  // return response.json();
+  if(!response.ok) {
+    throw new Error("Failed to fetch");
+  }
+  return response.json();
 }
 
 export default async function Home() {
-  // let {result} = await fetchAllProductsData();
+  let {result} = await fetchAllProductsData();
   return (
     <div>
-      {/* <Hero /> */}
-      {/* <ProductsType /> */}
-      {/* <ProductCarousel ProductData={result}/> */}
-      {/* <Jewellery /> */}
-      {/* <NewsLetter /> */}
+      <Hero />
+      <ProductsType />
+      <ProductCarousel ProductData={result}/>
+      <Jewellery />
+      <NewsLetter />
     </div>
   )
 }

@@ -8,3 +8,5 @@ const SignIn = () => {
         </ContextWrapper>
     )
 }
+
+export default SignIn;

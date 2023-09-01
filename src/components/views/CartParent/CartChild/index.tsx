@@ -9,6 +9,7 @@ import { client } from "../../../../../sanity/lib/client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import BASE_PATH_FOR_API from "@/components/shared/BasePath";
+import LoadingComp from "@/components/shared/LoadingComp";
 
 const builder = imageUrlBuilder(client);
 
@@ -63,15 +64,14 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
     let { cartArray, userData, dispatch, loading, setLoading } = useContext(cartContext);
     let router = useRouter();
     const priceSubTotal = () => {
-        let originalToSend: number = 0;
-        for (let index = 0; index < cartArray.length; index++) {
-            let element = cartArray[index];
+        let orignalToSend: number = 0;
+        allProductsForCart && allProductsForCart.forEach((element: oneProductType) => {
             let subTotalPrice = element.quantity * element.price;
-            originalToSend += subTotalPrice;
-            if (subTotalPrice) {
-                setTotalPrice(originalToSend);
-                router.refresh();
-            }
+            orignalToSend = orignalToSend + subTotalPrice;
+        });
+        if (orignalToSend !== 0) {
+            setTotalPrice(orignalToSend);
+            router.refresh();
         }
     }
     // if (cartArray.length != 0) {
@@ -91,7 +91,9 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
         }
     }, [cartArray, allProductsForCart])
     useEffect(() => {
+        if(allProductsForCart.length == 0) { setTotalPrice(0); }
         priceSubTotal();
+
     }, [allProductsForCart])
     const handleRemove = (product_id: string) => {
         if (userData) {
@@ -148,7 +150,7 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
             </div>
             <div className="md:flex-col lg:flex-row flex gap-6">
                 <div className="flex flex-col basis-[69%] gap-2">
-                    {allProductsForCart.map((item: oneProductType, index: number) => (
+                    {allProductsForCart ? allProductsForCart.map((item: oneProductType, index: number) => (
                         <div key={index} className="flex flex-shrink-0 gap-6">
                             <div className="w-[14rem]">
                                 <Image className="rounded-xl" width={1000} height={1000} src={urlFor(item.image[0]).width(1000).height(1000).url()} alt={item.image[0].alt} />
@@ -156,9 +158,10 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
                             <div className="space-y-1 md:space-y-3 w-full">
                                 <div className="flex justify-between">
                                     <h2 className="text-lg md:text-2xl font-light text-gray-700">{item.productName}</h2>
-                                    <div className="cursor-pointer" onClick={() => handleRemove(item._id)}>
-                                        <Trash2 size={28} />
-                                    </div>
+                                    {loading ? <LoadingComp size={"w-10"} /> :
+                                        <div className="cursor-pointer" onClick={() => handleRemove(item._id)}>
+                                            <Trash2 size={28} />
+                                        </div>}
                                 </div>
                                 <p className="text-gray-400 font-medium">{item.productTypes[1] ? item.productTypes[1] : "All"}</p>
                                 <h3 className="text-sm md:text-base">Delivery Estimation</h3>
@@ -190,7 +193,27 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    )) : !userData ? (
+                        <div className="text-center font-semibold text-gray-800 text-xl">Please login First</div>
+                    ) :
+                        arrayForLoading.map((index: number) => (
+                            <div key={index} className="border border-blue-300 shadow rounded-md p-4 w-full mx-auto">
+                                <div className="flex animate-pulse gap-4">
+                                    <div className="bg-slate-200 rounded-lg h-32 w-4/12"></div>
+                                    <div className="flex-1 space-y-6 py-1">
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                        </div>
+                                        <div className="h-8 w-16 bg-slate-200 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                 </div>
                 <div className="basis-1/4 space-y-6 px-6">
                     <h6 className="font-semibold text-xl">Order Summary</h6>
@@ -210,3 +233,5 @@ const CartComp = async ({ allProductsOfStore }: { allProductsOfStore: Array<oneP
 }
 
 export default CartComp;
+
+let arrayForLoading = [1, 2, 3, 4]

@@ -46,7 +46,7 @@ export default class AllProductsComponent extends Component<{ ProductData: props
     render() {
         return (
             <InfiniteScroll
-                dataLength={this.state.items.length} //This is important field to render the next data
+                dataLength={this.state.items.length}
                 next={this.getData}
                 hasMore={this.state.hasMore}
                 loader={<h4>Loading...</h4>}
@@ -55,13 +55,11 @@ export default class AllProductsComponent extends Component<{ ProductData: props
                         <b>Yay! You have seen it all</b>
                     </p>
                 }
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                className="content-center place-items-center justify-center grid grid-cols-1 md:grid-cols-2 py-10 lg:grid-cols-3 gap-4"
             >
-                <div>
-                    {this.state.items.map((item: oneProductType, index: number) => (
-                        <Card singleProductData={item} />
-                    ))}
-                </div>
+                {this.state.items.map((item: oneProductType, index: number) => (
+                    <Card singleProductData={item} />
+                ))}
             </InfiniteScroll>
         )
     }

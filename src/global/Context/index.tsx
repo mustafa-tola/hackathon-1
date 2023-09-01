@@ -4,6 +4,7 @@ import { cartReducer } from "../Reducer";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import BASE_PATH_FOR_API from "@/components/shared/BasePath";
 
 export const cartContext = createContext<any>(null);
 
@@ -67,6 +68,16 @@ const ContextWrapper = ({ children }: { children: ReactNode }) => {
             }
             setLoading(false)
         })
+        .catch((err) => {
+            let error = err.code.split("/");
+                error = error[error.length - 1];
+                setErrorsOfFirebase({
+                    key: "signup",
+                    errorMessage: error
+                })
+                setLoading(false)
+        })
+        
     }
     function signUpUser(email: string, password: string) {
         setLoading(true)
@@ -143,14 +154,16 @@ const ContextWrapper = ({ children }: { children: ReactNode }) => {
         }
     }
     const fetchApiForAllCartItems = async () => {
-        let res = await fetch(`/api/cart`)
-        if (!res.ok) {
-            throw new Error("Failed to fetch")
-        }
-        let dataToReturn = await res.json();
-        await setCartArray((prev: any) => dataToReturn.allCartData);
-        if (dataToReturn) {
-            return true;
+        if (userData) {
+            let res = await fetch(`/api/cart?user_id=${userData.uuid}`)
+            if (!res.ok) {
+                throw new Error("Failed to fetch")
+            }
+            let dataToReturn = await res.json();
+            await setCartArray((prev: any) => dataToReturn.allCartData);
+            if (dataToReturn) {
+                return true;
+            }
         }
     }
     useEffect(() => {
@@ -187,7 +200,7 @@ const ContextWrapper = ({ children }: { children: ReactNode }) => {
         }
     }
     return (
-        <cartContext.Provider value={{ cartArray, dispatch, userData, signUpUser, signUpViaGoogle, signInUser, logout, loading, sendEmailVerificationCode, setLoading }}>{children}</cartContext.Provider>
+        <cartContext.Provider value={{ cartArray, dispatch, userData, signUpUser, signUpViaGoogle, signInUser, logout, loading, sendEmailVerificationCode, setLoading,errorsOfFirebase, updateUsernamePhoto }}>{children}</cartContext.Provider>
     )
 }
 export default ContextWrapper;

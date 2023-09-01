@@ -21,13 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="overflow-hidden w-screen">
+        <div className="overflow-x-hidden">
           <TopLabel />
         </div>
         <Wrapper>
-          {/* <Navbar /> */}
+          <Navbar />
           <div className="min-h-screen">{children}</div>
-          {/* <Footer /> */}
+          <Footer />
         </Wrapper>
       </body>
     </html>

@@ -46,7 +46,7 @@ const ProductCarousel: FC<{ ProductData: Array<oneProductType> }> = ({ ProductDa
 
     return (
         <div className="space-y-4">
-            <div className="text-center border space-y-3">
+            <div className="text-center space-y-3">
                 <p className="text-blue-800 text-sm">PROMOTIONS</p>
                 <h3 className="text-2xl text-gray-900 font-bold">Our Promotions Events</h3>
             </div>
